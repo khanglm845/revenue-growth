@@ -1,74 +1,276 @@
 # Retail Revenue Growth & Profitability Diagnostic
 
-A Power BI case study analyzing the quality and drivers of retail revenue growth through profitability analysis, Price–Volume–Mix decomposition, product-mix diagnostics, market performance, and channel concentration.
+A management-oriented Power BI case study explaining **how retail revenue grew, what drove the change, where growth was concentrated, and which signals management should investigate next**.
 
 > **Dataset:** Starttrain – The Next Analyst Challenge Season 1  
 > **Period:** 2016–2018  
 > **Records:** 72,743  
-> **Tools:** Power BI, Power Query, DAX
+> **Coverage:** 14 countries · 5 product lines · 19 product types · 6 order methods  
+> **Tools:** Power BI · Power Query · DAX
 
 ---
 
-## Business Objective
+## Executive Snapshot
 
-The objective of this project was to move beyond descriptive sales reporting and answer four management-level questions:
+2018 revenue reached approximately **$424.4M**, up **17.4% YoY**. Growth was strong, but its quality was more nuanced:
+
+| Signal | 2018 Result | Interpretation |
+| --- | ---: | --- |
+| Revenue | **$424.4M** | **+17.4% YoY** |
+| Unit Volume | — | **+20.9% YoY** |
+| ASP | — | **-2.9% YoY** |
+| Gross Profit | — | **+17.6% YoY** |
+| Gross Margin | **42.25%** | broadly resilient |
+| Net Revenue Change | **+$62.8M** | fully reconciled through PVM |
+| Volume Effect | **+$74.5M** | main growth engine |
+| ASP + Mix Effects | **-$11.7M** | partially offset volume-led growth |
+
+**Bottom line:** growth became increasingly **volume-led rather than value-led**. Aggregate ASP declined, but roughly **77% of that decline was explained by product-mix shifts rather than broad-based within-product ASP deterioration**.
+
+Three management signals stood out:
+
+1. **Product concentration:** Video Games and Mobile generated approximately **73% of net incremental revenue**.
+2. **Mix dilution:** Computer volume growth was strong, but product mix offset roughly **51% of its volume-driven revenue uplift**.
+3. **Channel concentration:** Web represented about **88.8% of current revenue** and generated approximately **99.5% of net incremental growth**.
+
+---
+
+## Business Questions
+
+The analysis was designed to move beyond descriptive reporting and answer four questions:
 
 1. **How healthy is revenue growth?**
 2. **What is actually driving incremental revenue?**
 3. **Which products are growing with strong or weak growth quality?**
 4. **Which markets and channels are driving or concentrating business performance?**
 
-The final dashboard therefore focuses on explaining **what changed, why it changed, where the impact came from, and what management should investigate next**.
+The dashboard therefore follows a simple decision flow:
+
+**What changed → Why it changed → Where the impact came from → What management should investigate next**
 
 ---
 
-## Dataset Overview
+## Key Findings
 
-The dataset contains 72,743 retail sales records from 2016 to 2018.
+### 1. Growth shifted toward volume
 
-Key dimensions include:
+Revenue grew **17.4%**, while unit volume grew faster at **20.9%** and ASP declined **2.9%**.
 
-- **14 countries**
-- **5 product lines**
-- **19 product types**
-- **6 sales channels / order methods**
+At the same time, Gross Profit increased **17.6%** and Gross Margin remained approximately **42.25%**.
 
-The source dataset was already clean, so no material data-cleaning operations were required. Power Query was used as part of the data-loading and model-preparation workflow.
+This suggests that the company expanded primarily by selling more units rather than by increasing revenue per unit.
 
 ---
 
-## Data Model
+### 2. Volume created more growth than the company ultimately retained
 
-The report uses a star-schema-style model with `Sales` as the central fact table.
+The Price–Volume–Mix bridge reconciled the full **+$62.8M** YoY revenue change:
 
-Main dimensions include:
+| Revenue Driver | Impact |
+| --- | ---: |
+| Volume Effect | **+$74.5M** |
+| Within-Product ASP Effect | **-$2.6M** |
+| Product Mix Effect | **-$9.0M** |
+| **Net Revenue Change** | **+$62.8M** |
+
+Volume expansion generated substantial upside, but approximately **$11.7M** was offset by within-product ASP and product-mix effects.
+
+---
+
+### 3. Most of the ASP decline was mix-driven
+
+Company ASP decreased by approximately **$2.52 per unit**:
+
+- Within-product ASP effect: **-$0.57**
+- Product-mix effect: **-$1.95**
+
+Approximately **77% of the ASP decline** was therefore attributable to mix changes.
+
+This matters because a lower aggregate ASP does **not** automatically mean broad-based price deterioration.
+
+---
+
+### 4. Computer showed the clearest growth-quality trade-off
+
+Computer revenue still grew approximately **10.4%**, supported by unit growth of **21.9%**.
+
+However:
+
+- Volume Effect: **+$15.25M**
+- Product Mix Effect: **-$7.81M**
+
+The mix effect offset roughly **51%** of the uplift generated by volume.
+
+Drill-down showed that lower-value **Computer Accessories** gained unit share while higher-value **Laptop** and **Desktop** products lost share.
+
+---
+
+### 5. Incremental revenue was concentrated in a small number of product lines
+
+Video Games contributed approximately **$28.4M**, equal to **45.2%** of net company revenue growth.
+
+Mobile contributed another **27.6%**.
+
+Together, the two product lines generated approximately **73% of 2018 incremental revenue**, creating meaningful concentration in the company’s growth engine.
+
+---
+
+### 6. Geographic growth was more diversified
+
+The United States was the largest geographic contributor:
+
+- Incremental Revenue: **+$15.35M**
+- Growth Contribution: **24.4%**
+
+However, the top three markets represented only about **43% of incremental revenue**, indicating substantially more geographic diversification than product- or channel-level growth.
+
+---
+
+### 7. Growth was highly dependent on Web
+
+Web represented approximately:
+
+- **88.8% of current revenue**
+- **99.5% of net incremental revenue**
+
+Its revenue share also increased by approximately **1.86 percentage points** versus the prior year.
+
+This creates a clear concentration signal: the company’s growth became increasingly dependent on one order method.
+
+---
+
+## Management Implications
+
+| Priority | Evidence | Management implication |
+| --- | --- | --- |
+| **Protect core growth engines** | Video Games + Mobile generated ~73% of incremental revenue | Monitor availability, margin quality, and sustainability of the product lines carrying most growth |
+| **Review Computer mix** | -$7.81M mix effect offset ~51% of volume uplift | Investigate why lower-value product types gained share and whether the mix shift is intentional |
+| **Monitor Home & Kitchen mix** | Strong growth accompanied by meaningful mix-driven ASP dilution | Track whether unit growth is being achieved at the expense of value mix |
+| **Monitor channel concentration** | Web generated ~99.5% of incremental revenue | Assess dependency on Web and compare other channels using economics and strategic role, not revenue alone |
+
+These are **diagnostic implications**, not causal conclusions. The available data identifies patterns that deserve management attention but does not establish why those patterns occurred.
+
+---
+
+## Dashboard
+
+### Page 1 — Executive Performance
+**Question:** How did the company grow?
+
+![Executive Performance](screenshots-dashboard/page1_executive-performance.png)
+
+Includes:
+
+- Revenue, Gross Profit, Gross Margin, Volume, and ASP
+- Price–Volume–Mix revenue bridge
+- Product-line PVM comparison
+- Growth-quality and management-priority signals
+
+---
+
+### Page 2 — Growth Drivers
+**Question:** Where did incremental revenue come from?
+
+![Growth Drivers](screenshots-dashboard/page2_growth-drives.png)
+
+Includes:
+
+- Dynamic growth-driver selection
+- Revenue Change by Product / Region / Country / Channel
+- Growth Contribution analysis
+- Decomposition tree
+- Growth diagnostic matrix
+
+The page focuses on **incremental growth**, not simply ranking segments by current business size.
+
+---
+
+### Page 3 — Product Portfolio & Mix
+**Question:** Which products are generating high-quality growth, and why?
+
+![Product Portfolio & Mix](screenshots-dashboard/page3_product-portfolio-mix.png)
+
+Includes:
+
+- Product Growth Contribution vs Mix Impact
+- Product-type quantity-mix comparison
+- Quantity Mix Shift vs ASP
+- Product diagnostic matrix
+- Mix Offset analysis
+
+---
+
+### Page 4 — Market & Channel Performance
+**Question:** Which markets and channels are driving business performance?
+
+![Market & Channel Performance](screenshots-dashboard/page4_market-channel.png)
+
+Includes:
+
+- Revenue Growth vs Gross Margin by country
+- Incremental Revenue by market
+- Prior-year vs current-year channel mix
+- Territory performance matrix
+
+> Manager results represent assigned territory performance and are not normalized for market potential, sales targets, or territory difficulty.
+
+---
+
+## Analytical Methodology
+
+### 1. Price–Volume–Mix decomposition
+
+Revenue change was decomposed into:
+
+**Revenue Change = Volume Effect + Within-Product ASP Effect + Product Mix Effect**
+
+A midpoint decomposition approach was used to separate ASP changes from product-mix changes while avoiding order dependency.
+
+The bridge was validated with:
+
+**Revenue PVM Residual = $0**
+
+This ensures that the analytical decomposition fully reconciles to actual revenue growth.
+
+### 2. Product-mix diagnostic
+
+Aggregate ASP movement was decomposed into:
+
+**ASP Change = Within-Product ASP Effect + Product Mix Effect**
+
+This distinguishes between:
+
+- selling value changes within existing product types, and
+- ASP movement caused by changes in the mix of higher- and lower-value product types.
+
+### 3. Growth contribution
+
+Instead of ranking segments only by total revenue, the analysis measures **contribution to incremental revenue**.
+
+This identifies which products, markets, and channels actually created or diluted year-over-year growth.
+
+---
+
+## Data Model & KPI Layer
+
+The report uses a star-schema-style model with `Sales` as the central fact table and supporting dimensions for:
 
 - Calendar
 - Product
 - Region
 - Sales Manager / Territory
 
-Relationships follow a:
+Relationships use **one-to-many cardinality** with **single-direction filtering from dimension to fact**.
 
-- **1-to-many cardinality**
-- **Single-direction filtering from dimension to fact**
-
-Additional disconnected tables and field parameters were used for:
+Disconnected tables and field parameters support:
 
 - Revenue growth bridge
 - Prior-year vs current-year comparison
 - Dynamic growth-driver selection
 
-This structure keeps the analytical logic reusable across products, markets, channels, and time periods.
+### Core KPIs
 
----
-
-## Core KPIs
-
-The report tracks both business scale and growth quality.
-
-### Performance
-
+**Performance**
 - Revenue
 - Revenue YoY %
 - Revenue Change
@@ -77,11 +279,10 @@ The report tracks both business scale and growth quality.
 - Gross Margin %
 - Gross Margin Change
 - Quantity Growth
-- Average Selling Price (ASP)
+- Average Selling Price
 - ASP Growth
 
-### Diagnostic Measures
-
+**Diagnostic**
 - Revenue Volume Effect
 - Within-Product ASP Effect
 - Product Mix Effect
@@ -94,263 +295,49 @@ The report tracks both business scale and growth quality.
 
 ---
 
-# Analytical Methodology
+## Validation & Analytical Discipline
 
-## 1. Price–Volume–Mix Analysis
+The analysis includes several controls to reduce misleading interpretation:
 
-Revenue was decomposed into:
-
-**Revenue Change = Volume Effect + Within-Product ASP Effect + Product Mix Effect**
-
-A midpoint decomposition approach was used to separate ASP changes from product-mix changes while avoiding order dependency.
-
-The decomposition was validated with a reconciliation measure:
-
-**Revenue PVM Residual = $0**
-
-This ensured that the analytical bridge fully reconciled to actual revenue growth.
+- The PVM bridge reconciles fully to actual revenue growth: **Residual = $0**
+- Aggregate ASP decline is separated into within-product and mix effects rather than being treated as pure pricing deterioration
+- Manager performance is not normalized for market potential, sales targets, or territory difficulty
+- Findings are treated as **diagnostic signals rather than causal evidence**
 
 ---
 
-## 2. Product-Mix Diagnostic
+## Limitations
 
-Aggregate ASP changes were further decomposed into:
+The dataset does not include:
 
-**ASP Change = Within-Product ASP Effect + Product Mix Effect**
+- Sales quotas or targets
+- Commission or incentive data
+- Customer acquisition or marketing cost
+- Territory-potential normalization
 
-This made it possible to distinguish between:
+Additional limitations:
 
-- changes in selling value within existing product types, and
-- changes caused by selling a different mix of high- and low-value products.
-
----
-
-## 3. Growth Contribution
-
-Instead of ranking segments only by total revenue, the analysis focuses on:
-
-**Contribution to incremental revenue**
-
-This identifies which products, countries, and channels actually created or diluted year-over-year growth.
-
----
-
-# Key Findings
-
-## 1. 2018 growth shifted from value-led to volume-led
-
-Revenue reached approximately **$424.4M**, growing **17.4% YoY**, while unit volume grew faster at **20.9%**.
-
-At the same time:
-
-- ASP declined **2.9%**
-- Gross Profit increased **17.6%**
-- Gross Margin remained resilient at **42.25%**, improving approximately **0.07 percentage points**
-
-This indicates that 2018 growth depended increasingly on selling more units rather than generating higher revenue per unit.
-
----
-
-## 2. Volume generated $74.5M of potential growth, but ASP and mix offset $11.7M
-
-The 2018 revenue bridge showed:
-
-| Revenue Driver | Impact |
-| --- | ---: |
-| Volume Effect | **+$74.5M** |
-| Within-Product ASP Effect | **-$2.6M** |
-| Product Mix Effect | **-$9.0M** |
-| Net Revenue Change | **+$62.8M** |
-
-Although volume expansion generated more growth than the final revenue increase, approximately **$11.7M** was offset by ASP and product-mix effects.
-
----
-
-## 3. Approximately 77% of the ASP decline was mix-driven
-
-Company ASP declined by approximately **$2.52 per unit**.
-
-The decomposition showed:
-
-- Within-product ASP effect: **-$0.57**
-- Product-mix effect: **-$1.95**
-
-Therefore, approximately **77% of the ASP decline was attributable to product-mix changes**, rather than broad-based deterioration in within-product ASP.
-
-This distinction was important because the decline in aggregate ASP did not necessarily imply company-wide price erosion.
-
----
-
-## 4. Computer showed the strongest product-mix dilution
-
-Computer revenue still increased approximately **10.4%**, supported by strong volume growth of **21.9%**.
-
-However:
-
-- Volume Effect: **+$15.25M**
-- Product Mix Effect: **-$7.81M**
-
-The changing product mix therefore offset approximately **51% of the revenue uplift created by volume growth**.
-
-Further drill-down showed that lower-value Computer Accessories gained unit share while higher-value Laptop and Desktop products lost share.
-
-This explains why aggregate Computer ASP declined sharply despite relatively resilient within-product ASP performance.
-
----
-
-## 5. Revenue growth was concentrated by product
-
-Video Games generated approximately:
-
-- **$28.4M** of incremental revenue
-- **45.2%** of net company revenue growth
-
-Mobile contributed another **27.6%**.
-
-Together, **Video Games and Mobile generated approximately 73% of 2018 net incremental revenue**.
-
-This indicates meaningful product-level growth concentration.
-
----
-
-## 6. Geographic growth was more diversified
-
-The United States was the largest geographic growth contributor:
-
-- Incremental Revenue: **+$15.35M**
-- Growth Contribution: **24.4%**
-
-However, growth was distributed across multiple countries.
-
-The top three markets accounted for approximately **43% of incremental revenue**, indicating substantially lower concentration than at the product or channel level.
-
----
-
-## 7. Growth was highly concentrated in the Web channel
-
-Web represented approximately:
-
-- **88.8% of current revenue**
-- **99.5% of net incremental revenue**
-
-Its revenue share also increased by approximately **1.86 percentage points** compared with the prior year.
-
-This suggests that business growth became increasingly dependent on a single order channel.
-
----
-
-# Dashboard Structure
-
-## Page 1 – Executive Performance
-
-**Management question:** How did the company grow?
-
-Highlights:
-
-- Revenue, Gross Profit, Margin, Volume, and ASP KPIs
-- Revenue Price–Volume–Mix bridge
-- Product-line PVM comparison
-- Dynamic growth-quality and management-priority insights
-
----
-
-## Page 2 – Growth Drivers
-
-**Management question:** Where did incremental revenue come from?
-
-Highlights:
-
-- Dynamic Growth Driver field parameter
-- Revenue Change by Product / Region / Country / Channel
-- Growth Contribution analysis
-- Revenue Change decomposition tree
-- Growth diagnostic matrix
-
-The page focuses on **incremental growth**, rather than simply ranking segments by business size.
-
----
-
-## Page 3 – Product Portfolio & Mix
-
-**Management question:** Which products are generating high-quality growth, and why?
-
-Highlights:
-
-- Product Growth Contribution vs Mix Impact
-- Product-type quantity-mix comparison
-- Quantity Mix Shift vs ASP
-- Product diagnostic matrix
-- Mix Offset analysis
-
-This page provides the deepest diagnostic drill-down in the report.
-
----
-
-## Page 4 – Market & Channel Performance
-
-**Management question:** Which markets and channels are driving business performance?
-
-Highlights:
-
-- Revenue Growth vs Gross Margin by country
-- Incremental Revenue by market
-- Prior-year vs current-year channel mix
-- Territory performance matrix
-
-> Manager results represent assigned territory performance and are not normalized for market potential, sales targets, or territory difficulty.
-
----
-
-# Management Implications
-
-Based on the analysis:
-
-### Protect core growth engines
-
-Video Games and Mobile generated the majority of incremental revenue with relatively limited adverse product-mix effects.
-
-### Review Computer product mix
-
-Computer remained a growth contributor, but its increasing exposure to lower-value products materially diluted the revenue benefit generated by higher volume.
-
-### Monitor Home & Kitchen mix
-
-Home & Kitchen delivered strong volume and revenue growth but also experienced meaningful mix-driven ASP dilution.
-
-### Monitor channel concentration
-
-Web already dominates total revenue and generated nearly all of 2018 net incremental growth, increasing dependency on a single order channel.
-
----
-
-# Limitations
-
-This analysis is based on historical transactional data and should not be interpreted as causal evidence.
-
-Specific limitations include:
-
-- No sales quotas or targets
-- No commission or incentive data
-- No customer acquisition or marketing cost data
-- No territory-potential normalization
 - ASP movements may still contain geographic, channel, or lower-level product-mix effects
-- Gross Profit analysis does not represent full operating profitability
-
-Accordingly, the analysis identifies performance patterns and diagnostic signals rather than proving causal relationships.
+- Gross Profit does not represent full operating profitability
+- Historical transactional patterns do not establish causality
 
 ---
 
-# Skills Demonstrated
+## Skills Demonstrated
 
-- Financial performance analysis
+**Business Analytics**
 - Revenue variance analysis
-- Price–Volume–Mix decomposition
 - Profitability analysis
-- Product-mix analysis
+- Price–Volume–Mix decomposition
+- Product-mix diagnostics
 - Growth-contribution analysis
-- Data modeling
+- Management-oriented data storytelling
+
+**BI & Data**
+- Power BI
 - DAX
 - Power Query
+- Dimensional data modeling
 - Dynamic field parameters
-- Interactive Power BI dashboard design
-- Management-oriented data storytelling
+- Interactive dashboard design
+- Analytical validation and reconciliation
