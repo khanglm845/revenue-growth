@@ -276,11 +276,17 @@ DIVIDE (
 )
 ```
 
-Both measures above remove the Product Line row filter while preserving other
-active filters. In the standard Product Line visuals this gives contribution to
-the current report context. If Product Type or other product-level filters are
-introduced, verify that this denominator still matches the intended business
-question; use a separate full-portfolio or `ALLSELECTED` measure when needed.
+The two denominators intentionally have different scopes:
+
+- `Growth Contribution %` removes only the Product Line filter, so it measures
+  incremental-revenue contribution against the current report context while
+  preserving other active filters.
+- `Product Revenue Share %` removes all `DimProduct` filters, so it measures
+  revenue share against the full product portfolio under the remaining
+  non-product filters.
+
+If a visual needs contribution within the user's selected product subset, create
+a separate `ALLSELECTED` version rather than silently changing these measures.
 
 ```dax
 Quantity Mix =
