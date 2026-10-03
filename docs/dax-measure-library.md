@@ -129,34 +129,28 @@ SELECTEDVALUE ( 'Calendar'[Year], MAX ( 'Calendar'[Year] ) )
 ### Convention
 
 At product-type grain, let prior/current quantity be Q0/Q1 and
-prior/current ASP be P0/P1. The bridge uses a fixed prior-year portfolio
-ASP as the volume baseline and then separates within-product ASP movement
-from the remaining product-mix / assortment effect.
+prior/current ASP be P0/P1. The bridge keeps the original project convention:
+volume is valued at prior-year ASP in the **current filter context**, within-product
+ASP movement is midpoint-weighted, and product mix is the residual that closes
+the bridge.
 
--   **Volume effect:** quantity change valued at the prior-year portfolio ASP.
-    The product filters are removed from the baseline ASP so that the volume
-    component remains additive when the bridge is broken down by Product Line
-    or Product Type. Non-product filters such as year, country, or channel remain
-    active.
+-   **Volume effect:** quantity change valued at `[ASP LY]` in the current filter
+    context. At company total this is company ASP; on a Product Line row this is
+    that Product Line's ASP.
 -   **Within-product ASP effect:** product-type ASP movement weighted by the
     midpoint of prior/current quantity.
 -   **Product mix / assortment effect:** the residual required to reconcile to
     actual revenue change. This residual can include changes in relative product
     weights and the effect of product types appearing/disappearing between periods.
 
-Keep the product grain consistent across all components.
-
-```dax
-PVM Baseline ASP LY =
-CALCULATE (
-    [ASP LY],
-    REMOVEFILTERS ( 'DimProduct' )
-)
-```
+Keep the product grain and filter context consistent across all components. A
+Product Line-level decomposition is a **local diagnostic**; because its volume
+baseline is the Product Line's own prior-year ASP, Product Line component rows
+should not be assumed to add back to the company-level Volume / Mix components.
 
 ```dax
 Revenue Volume Effect =
-( [Quantity] - [Quantity LY] ) * [PVM Baseline ASP LY]
+( [Quantity] - [Quantity LY] ) * [ASP LY]
 ```
 
 ```dax
@@ -193,7 +187,7 @@ Revenue PVM Residual =
 Expected PVM residual: 0, apart from negligible floating-point rounding.
 
 > **Interpretation note:** because the mix term is defined as the residual after
-> the fixed-baseline volume effect and midpoint within-product ASP effect, a zero
+> the context-specific volume effect and midpoint within-product ASP effect, a zero
 > residual confirms the bridge arithmetic. It does not prove that the selected
 > decomposition is the only valid economic attribution.
 
@@ -216,18 +210,16 @@ ASP Decomposition Residual =
     - [ASP Product Mix Effect]
 ```
 
-At the **full product-portfolio context**, where `PVM Baseline ASP LY` equals
-`[ASP LY]`, the two ASP components reconcile algebraically to `[ASP Change]`
-when divided by current-period quantity:
+Because the volume effect uses `[ASP LY]` in the same filter context, the two
+ASP components reconcile algebraically to `[ASP Change]` when divided by
+current-period quantity:
 
 `ASP Change = ASP Within-Product Effect + ASP Product Mix Effect`
 
-Do not assume that identity will hold inside a Product Line / Product Type row,
-because the revenue PVM intentionally uses a fixed portfolio baseline ASP to
-preserve additivity across the product hierarchy. Use these ASP component
-measures for portfolio-level diagnostics unless a separate local ASP
-decomposition is implemented. The mix component remains a residual mix /
-assortment effect rather than a causal estimate.
+This identity can be checked at company, Product Line, or Product Type context,
+provided the same grain and filters are used throughout the decomposition. The
+mix component remains a residual mix / assortment effect rather than a causal
+estimate.
 
 ---
 
@@ -271,7 +263,7 @@ DIVIDE (
     [Revenue Change],
     CALCULATE (
         [Revenue Change],
-        REMOVEFILTERS ( 'DimProduct' )
+        REMOVEFILTERS ( 'DimProduct'[Product line] )
     )
 )
 ```
@@ -284,10 +276,11 @@ DIVIDE (
 )
 ```
 
-Both measures above use the full product portfolio as the denominator while
-preserving non-product filters. If a visual instead needs contribution within a
-selected subset of products, create a separate `ALLSELECTED` version rather than
-changing the company-level measure.
+Both measures above remove the Product Line row filter while preserving other
+active filters. In the standard Product Line visuals this gives contribution to
+the current report context. If Product Type or other product-level filters are
+introduced, verify that this denominator still matches the intended business
+question; use a separate full-portfolio or `ALLSELECTED` measure when needed.
 
 ```dax
 Quantity Mix =
@@ -544,7 +537,7 @@ measure against that source field.
 | --- | --- | --- | --- |
 | 1 Executive | KPI cards | Revenue, Quantity, GP, GM%, ASP | Secondary labels show YoY / pp |
 | 1 Executive | Waterfall | Bridge Step + `[Revenue Bridge Value]` | Sort by order; mark LY/CY totals |
-| 1 Executive | PVM by product line | Product Line + Volume / Within ASP / Mix | Components use the fixed portfolio baseline and should add back to the company bridge |
+| 1 Executive | PVM by product line | Product Line + Volume / Within ASP / Mix | Treat each row as a local PVM diagnostic; component rows need not sum to company component totals |
 | 2 Growth Drivers | Dynamic bar | Growth Driver parameter + `[Revenue Change]` | Include negative contributors |
 | 2 Growth Drivers | Decomposition Tree | Analyze `[Revenue Change]`; explain by dimensions | Drill from total to segment |
 | 3 Portfolio | Scatter | X: Growth Contribution; Y: Mix impact; Details: Product Line | Percentage axes, zero reference |
@@ -617,9 +610,8 @@ therefore be treated as acceptance tests for the final implementation.
 -   [ ] Verify one-to-many, single-direction dimension-to-fact relationships.
 -   [ ] Test LY measures across 2017 and 2018.
 -   [ ] Reconcile company-level PVM effects and portfolio-level ASP components independently.
--   [ ] Verify PVM component additivity across Product Line / Product Type views.
--   [ ] Confirm that `PVM Baseline ASP LY` removes product filters only and
-    preserves intended non-product slicers.
+-   [ ] Verify company-level PVM reconciliation and row-level PVM reconciliation separately.
+-   [ ] Do not require Product Line Volume / Mix component rows to sum to the company component totals when each row uses its own `[ASP LY]` baseline.
 -   [ ] Format ratios, percentage points, currency, and quantities
     correctly.
 -   [ ] Hide Product Type diagnostics until one Product Line is
@@ -632,8 +624,9 @@ therefore be treated as acceptance tests for the final implementation.
 ### Design cautions
 
 1.  A zero PVM residual confirms arithmetic reconciliation, not causality.
-2.  Keep the PVM grain consistent across measures. The fixed portfolio ASP
-    baseline is what makes the volume allocation additive across product levels.
+2.  Keep PVM grain and filter context consistent across measures. Company-level
+    and Product Line-level decompositions can both reconcile locally even when
+    their individual Volume / Mix components are not additive across levels.
 3.  `Revenue Product Mix Effect` is a residual mix / assortment effect. If a
     product type exists in only one period, its entry/exit impact is absorbed by
     this residual rather than by the within-product ASP effect.
