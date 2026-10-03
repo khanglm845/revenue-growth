@@ -6,7 +6,8 @@ A management-oriented Power BI case study explaining **how retail revenue grew, 
 > **Period:** 2016–2018  
 > **Records:** 72,743  
 > **Coverage:** 14 countries · 5 product lines · 19 product types · 6 order methods  
-> **Tools:** Power BI · Power Query · DAX
+> **Tools:** Power BI · Power Query · DAX  
+> **Technical reference:** [Reviewed DAX measure library](docs/dax-measure-library.md)
 
 ---
 
@@ -224,7 +225,7 @@ Revenue change was decomposed into:
 
 **Revenue Change = Volume Effect + Within-Product ASP Effect + Product Mix Effect**
 
-A midpoint decomposition approach was used to separate ASP changes from product-mix changes while avoiding order dependency.
+The bridge values quantity change at prior-year ASP in the current filter context, uses midpoint quantity weighting for within-product ASP movement, and assigns the remaining reconciled effect to product mix / assortment. Product-level rows are treated as local diagnostics rather than additive allocations of the company-level components.
 
 The bridge was validated with:
 
